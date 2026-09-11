@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로필 & 포트폴리오</title>
+    <style>
+      :root {
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --accent-color: #3b82f6;
+      --accent-hover: #1d4ed8;
+      --tag-bg: #e0f2fe;
+      --tag-text: #0369a1;
+      --border-color: #e5e7eb;
+      }
+      * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      html {
+      scroll-behavior: smooth;
+      }
+      body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 2.5rem 1rem;
+      }
+      /* 가로폭 설정 및 레이아웃 상위 기준 설정 */
+      .container {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      position: relative; /* 자식 요소의 위치 기준 */
+      }
+      .item button {
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      cursor: pointer;
+      background-color: var(--tag-bg);
+      color: var(--tag-text);
+      line-height: 1.4;
+      font-size: 0.8rem;
+      font-weight: 600;
+      box-shadow: none;
+      border: none;
+      margin-top: 6px;
+      transition: background-color 0.2s ease;
+      }
+      .item button:hover {
+      background-color: #bae6fd;
+      }
+      .item a {
+      text-decoration: none;
+      }
+      /* 프로필 헤더 */
+      .profile-header {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      }
+      .profile-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      }
+      .profile-header .subtitle {
+      font-size: 1.1rem;
+      color: var(--accent-color);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      word-break: keep-all;
+      }
+      .profile-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      word-break: keep-all;
+      }
+      /* 섹션 공통 */
+      .section {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      }
+      .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--bg-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      }
+      .section-na{
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--bg-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      }
+      /* 스킬 태그 */
+      .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      }
+      .tag {
+      background-color: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      }
+      /* 경험/프로젝트 리스트 */
+      .item-list {
+      list-style: none;
+      }
+      .item {
+      margin-bottom: 1.2rem;
+      }
+      .item:last-child {
+      margin-bottom: 0;
+      }
+      .item-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-primary);
+      }
+      .item-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+      word-break: keep-all;
+      }
+      /* 그리드 카드 (관심사/취미) */
+      .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      }
+      .info-card {
+      background-color: var(--bg-color);
+      padding: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      }
+      .info-card h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+      }
+      .info-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      word-break: keep-all;
+      }
+      footer {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-top: 2rem;
+      }
+      /* --- 페이지(.container) 안쪽에 고정되는 퀵 내비게이션 --- */
+      .quick-nav-container {
+      position: sticky;
+      bottom: 5rem;
+      left: 100%; /* 페이지 오른쪽 안쪽 영역으로 밀어줌 */
+      transform: translateX(-15px); /* 오른쪽 끝에서 안쪽으로 5px 여백 생성 */
+      width: fit-content;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+      z-index: 1000;
+      margin-top: -3rem; /* 본문 레이아웃의 높이를 크게 해치지 않도록 음수 마진 적용 */
+      pointer-events: none; /* 클릭 영역 최적화 */
+      }
+      .quick-nav-container * {
+      pointer-events: auto; /* 실제 요소만 클릭 가능 */
+      }
+      /* 숨겨둔 토글용 체크박스 */
+      .nav-checkbox {
+      display: none;
+      }
+      /* 퀵 메뉴 기본 상태 (숨김) */
+      .quick-nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.25s ease-in-out;
+      }
+      .quick-nav-menu a {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 0.95rem;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      text-align: right;
+      }
+      .quick-nav-menu a:hover {
+      background-color: var(--accent-color);
+      color: #ffffff;
+      border-color: var(--accent-color);
+      }
+      /* 토글 버튼 */
+      .quick-nav-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background-color: var(--accent-color);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: all 0.25s ease;
+      }
+      .quick-nav-btn:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+      }
+      /* 체크박스 Checked 상태 제어 */
+      .nav-checkbox:checked + .quick-nav-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      }
+      .nav-checkbox:checked ~ .quick-nav-btn {
+      transform: rotate(180deg);
+      background-color: #4b5563;
+      }
+      @media (min-width: 1600px) {
+      .container {
+      max-width: 1040px;
+      }
+      body {
+      padding: 3.5rem 1rem;
+      }
+      }
+    </style>
+  </head>
+  <body id="top">
+    <div class="container">
+      <!-- 프로필 헤더 -->
+      <header class="profile-header">
+        <h1>조유정</h1>
+        <div class="subtitle">웹 개발 경험을 바탕으로 인프라/보안 영역까지 확장한 체계적인 문제 해결력</div>
+        <p>
+          웹 서비스 구축부터 인프라 보안까지 깊은 흥미를 느끼고 있습니다.
+          새롭고 호기심을 자극하는 지식을 익히는 것을 즐기며 체계적인 개발을 지향합니다.
+        </p>
+      </header>
+      <!-- 기술 스택 -->
+      <section class="section" id="skills">
+        <h2 class="section-title">💻 Technical Skills</h2>
+        <div class="skills-grid">
+          <span class="tag">Python</span>
+          <span class="tag">Java</span>
+          <span class="tag">Javascript</span>
+          <span class="tag">React</span>
+          <span class="tag">SQL</span>
+          <span class="tag">Springboot</span>
+          <span class="tag">REST API</span>
+          <span class="tag">Linux</span>
+          <span class="tag">Network</span>
+        </div>
+      </section>
+      <!-- 주요 프로젝트 & 작업 경험 -->
+      <section class="section" id="projects">
+        <h2 class="section-title">🚀 Experience & Projects</h2>
+        <ul class="item-list">
+          <li class="item">
+            <div class="item-title">부산 관광지 소개 웹 사이트 제작</div>
+            <div class="item-desc">부산의 주요 관광 정보를 한눈에 보기 어려운 불편함을 해소하기 위해, React 기반의 UI를 기획·구현하여 누구나 쉽게 접근하고 탐색할 수 있는 포트폴리오 웹 서비스를 완성·배포했습니다.</div>
+            <div>
+              <a href="https://www.arata-busan.com/" target="_blank">
+              <button>바로가기</button>
+              </a>
+            </div>
+          </li>
+          <p class ="section-na">
+          </p>
+          <li class="item">
+            <div class="item-title">React & Springboot 관리자 개발</div>
+            <div class="item-desc">효율적인 데이터 관리 체계 구축을 목표로, DB(SQL) Schema 설계부터 Spring Boot 백엔드 API 개발 및 React 프론트엔드 연결까지 전 과정을 직접 수행하여, 데이터 CRUD 및 관리가 가능한 관리자 시스템을 구축했습니다.</div>
+          </li>
+          <p class ="section-na">
+          </p>
+          <li class="item">
+            <div class="item-title">SKT ALEPH 수강중</div>
+            <div class="item-desc">실무 인프라 보안 역량 강화를 위해 SKT ALEPH 과정을 수강 중이며, Flask 기반 Webhook 연동 및 Linux 네트워크 환경을 직접 구축·실습하고 있습니다.</div>
+          </li>
+        </ul>
+      </section>
+      <!-- 관심사 및 개인 취미 -->
+      <section class="section" id="interests">
+        <h2 class="section-title">✨ Interests & Personal Life</h2>
+        <div class="grid-2">
+          <div class="info-card">
+            <h4>🎮 게이밍</h4>
+            <p>몰입감 높은 비디오 게임 플레이와 게임 관련 콘텐츠 탐색을 지속하고 있습니다.</p>
+          </div>
+          <div class="info-card">
+            <h4>👻 스토리텔링 & 영상</h4>
+            <p>미스터리/공포 실화 이야기와 공포 게임 플레이 영상을 즐겨 봅니다.</p>
+          </div>
+          <div class="info-card">
+            <h4>🍰 디저트 & 요리</h4>
+            <p>맛있는 디저트를 찾아 즐기며, 요리와 베이킹 같은 손수 만드는 활동에 관심을 두고 있습니다.</p>
+          </div>
+          <div class="info-card">
+            <h4>🔍 새로운 지식 탐구</h4>
+            <p>신기하고 새로운 분야의 지식을 배울 때 큰 즐거움을 느낍니다.</p>
+          </div>
+        </div>
+      </section>
+      <!-- 컨테이너 내부 안쪽에 위치하는 퀵 내비게이션 -->
+      <div class="quick-nav-container">
+        <input type="checkbox" id="nav-toggle" class="nav-checkbox">
+        <nav class="quick-nav-menu">
+          <a href="#top">Top ▲</a>
+          <a href="#skills">기술스택</a>
+          <a href="#projects">주요프로젝트 및 작업경험</a>
+          <a href="#interests">관심사 및 개인취미</a>
+        </nav>
+        <label for="nav-toggle" class="quick-nav-btn" aria-label="메뉴 열기/닫기">▲</label>
+      </div>
+      <footer>
+        <p>© 2026 Personal Profile Page. All rights reserved.</p>
+      </footer>
+    </div>
+  </body>
+</html>
