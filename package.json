@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-passkey-server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@simplewebauthn/server": "^13.2.2",
+    "express": "^5.1.0"
+  }
+}
