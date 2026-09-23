@@ -179,6 +179,24 @@
       border-radius: 12px;
       }
 
+      .passkey-panel {
+      background-color: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      }
+      .passkey-panel h2 {
+      color: #1e3a8a;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      }
+      .passkey-panel p {
+      color: #475569;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      }
+
       /* 컨트롤 버튼 그룹 */
       .btn-group {
       display: flex;
@@ -324,6 +342,18 @@
         </p>
       </header>
 
+      <section class="passkey-panel" aria-labelledby="passkey-title">
+        <h2 id="passkey-title">패스키 관리</h2>
+        <p>패스키를 등록하거나 인증하면 아래 비공개 공간을 열 수 있습니다. 개인키는 이 기기 밖으로 나가지 않습니다.</p>
+        <div class="btn-group">
+          <button class="btn-passkey" onclick="registerPasskey()">패스키 등록</button>
+          <button class="btn-passkey" onclick="authenticatePasskey()">패스키 인증</button>
+          <button class="btn-passkey btn-danger" onclick="deleteFirstPasskey()">첫 번째 패스키 삭제</button>
+          <button class="btn-passkey btn-dark" onclick="testInvalidPasskey()">잘못된 패스키 테스트</button>
+        </div>
+        <div id="log-box" class="log-box">[System Log] 패스키 작업 대기 중...</div>
+      </section>
+
       <!-- ============================================================ -->
       <!-- [공개 영역 2] 기술 스택 -->
       <!-- ============================================================ -->
@@ -416,14 +446,6 @@
           비밀번호 없이 패스키가 만든 서명으로만 접근합니다. 개인키는 이 기기 밖으로 나가지 않고, 서버에는 공개키만 저장됩니다.
         </p>
 
-        <!-- 패스키 동작 및 검증 테스트 버튼 그룹 -->
-        <div class="btn-group">
-          <button class="btn-passkey" onclick="registerPasskey()">패스키 등록 (공개키 서버 저장)</button>
-          <button class="btn-passkey" onclick="authenticatePasskey()">패스키 인증 (잠금 해제)</button>
-          <button class="btn-passkey btn-danger" onclick="deleteFirstPasskey()">첫 번째 패스키 삭제</button>
-          <button class="btn-passkey btn-dark" onclick="testInvalidPasskey()">타인 패스키 거부 시도</button>
-        </div>
-
         <!-- ---------------------------------------------------- -->
         <!-- 🔐 패스키 인증 성공 시 노출되는 비공개 항목 3가지 -->
         <!-- ---------------------------------------------------- -->
@@ -459,8 +481,6 @@
 
         </div>
 
-        <!-- 시스템 실시간 로그 박스 -->
-        <div id="log-box" class="log-box">[System Log] 패스키 작업 대기 중...</div>
       </section>
 
       <!-- 퀵 내비게이션 -->
