@@ -558,6 +558,7 @@
             log("[성공] 서버에 공개키(PublicKey)만 안전하게 등록되었습니다.");
           } else throw new Error(verifyResult.message || '등록 검증에 실패했습니다.');
         } catch (err) {
+          await fetch(`${API_BASE}/api/passkey/register-cancel`, { method: 'POST' }).catch(() => {});
           log("[에러] 패스키 등록 실패: " + describePasskeyError(err));
         }
       }

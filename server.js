@@ -91,6 +91,7 @@ app.get('/api/passkey/register-options', async (req, res) => {
   });
 
   currentChallenge = options.challenge;
+  console.log(`[Passkey] registration challenge issued: ${currentChallenge}`);
   res.json(options);
 });
 
@@ -121,6 +122,7 @@ app.post('/api/passkey/register-verify', async (req, res) => {
       transports: req.body.response?.transports || []
     });
     saveCredentials();
+    console.log(`[Passkey] public key saved for credential: ${credential.id}`);
 
     res.json({ success: true });
   } catch (error) {
@@ -128,6 +130,11 @@ app.post('/api/passkey/register-verify', async (req, res) => {
     console.error('Passkey registration verification failed:', error);
     res.status(400).json({ success: false, message: error.message });
   }
+});
+
+app.post('/api/passkey/register-cancel', (req, res) => {
+  currentChallenge = null;
+  res.json({ success: true, message: '등록 대기 요청을 취소했습니다.' });
 });
 
 app.get('/api/passkey/login-options', async (req, res) => {
