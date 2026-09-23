@@ -24,3 +24,21 @@ The registration options include the human-readable identity `userDisplayName: "
 ## Security boundary
 
 The public profile remains in `index.html`. Private content is kept in `server.js` and is returned only from `/api/private-content` after a successful passkey verification and short-lived session-token check. An unauthenticated request receives HTTP `401`.
+
+## Login evidence for T08-C27 to T08-C35
+
+- **T08-C27**: `GET /api/passkey/login-options` generates and stores a fresh authentication challenge in `currentChallenge` for every login attempt.
+- **T08-C28**: The server logs each authentication challenge. Two consecutive login requests produce different values; challenge values are not included in this document.
+- **T08-C29**: `verifyAuthenticationResponse()` checks the signature against the matching credential's stored public key before issuing a session token.
+- **T08-C30**:
+
+	| Request | Result |
+	| --- | --- |
+	| Valid authenticator assertion | `200`, `success: true`, short-lived session token issued |
+	| Unknown credential ID or invalid assertion | `401`, access denied |
+
+- **T08-C31**: After a login verification attempt, `currentChallenge` is cleared. Replaying the same request receives `400`, `인증 요청이 만료되었습니다.`
+- **T08-C32**: A successful login is represented by a short-lived random session token. The token is sent as `Authorization: Bearer <token>` when loading private content.
+- **T08-C33**: `POST /api/passkey/logout` deletes the session token. Reusing the old token against `/api/private-content` then receives `401`, `패스키 인증이 필요합니다.`
+- **T08-C34**: Session tokens are intentionally redacted in this document and in browser logs. Only the token prefix may be used in local debugging; the complete value is never submitted.
+- **T08-C35**: The page contains no password input or password-based login flow. Authentication uses WebAuthn passkeys only.

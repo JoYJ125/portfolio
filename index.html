@@ -419,6 +419,7 @@
         <div class="btn-group">
           <button class="btn-passkey" onclick="registerPasskey()">패스키 등록</button>
           <button class="btn-passkey" onclick="authenticatePasskey()">패스키 인증</button>
+          <button id="logout-button" class="btn-passkey btn-dark" onclick="logoutPasskey()" hidden>로그아웃</button>
           <button class="btn-passkey btn-danger" onclick="deleteFirstPasskey()">첫 번째 패스키 삭제</button>
           <button class="btn-passkey btn-dark" onclick="testInvalidPasskey()">잘못된 패스키 테스트</button>
         </div>
@@ -602,11 +603,25 @@
           if (result.success) {
             log("[성공] 패스키 서명 검증 완료 -> 비공개 영역 3가지 항목 잠금 해제!");
             sessionToken = result.sessionToken;
+            document.getElementById('logout-button').hidden = false;
             await loadPrivateContent();
           } else throw new Error(result.message || '서명 검증에 실패했습니다.');
         } catch (err) {
           log("[에러] 인증 실패: " + err.message);
         }
+      }
+
+      async function logoutPasskey() {
+        if (!sessionToken) return;
+        await fetch(`${API_BASE}/api/passkey/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${sessionToken}` }
+        });
+        sessionToken = null;
+        document.getElementById('private-content').innerHTML = '';
+        document.getElementById('private-content').style.display = 'none';
+        document.getElementById('logout-button').hidden = true;
+        log('[성공] 로그아웃 완료 -> 비공개 영역을 다시 잠갔습니다.');
       }
 
       // 3) 첫 번째 패스키 삭제 후 예비 패스키로 접속 검증

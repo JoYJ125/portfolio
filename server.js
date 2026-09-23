@@ -152,6 +152,7 @@ app.get('/api/passkey/login-options', async (req, res) => {
   });
 
   currentChallenge = options.challenge;
+  console.log(`[Passkey] authentication challenge issued: ${currentChallenge}`);
   res.json(options);
 });
 
@@ -183,6 +184,7 @@ app.post('/api/passkey/login-verify', async (req, res) => {
 
     storedCredential.counter = verification.authenticationInfo.newCounter;
     saveCredentials();
+    console.log(`[Passkey] authentication verified for credential: ${storedCredential.id}`);
     const sessionToken = crypto.randomBytes(32).toString('hex');
     sessions.set(sessionToken, Date.now() + 30 * 60 * 1000);
     res.json({ success: true, sessionToken });
@@ -191,6 +193,12 @@ app.post('/api/passkey/login-verify', async (req, res) => {
     console.error('Passkey authentication verification failed:', error);
     res.status(401).json({ success: false, message: error.message });
   }
+});
+
+app.post('/api/passkey/logout', (req, res) => {
+  const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
+  if (token) sessions.delete(token);
+  res.json({ success: true, message: '로그아웃했습니다.' });
 });
 
 app.get('/api/private-content', (req, res) => {
