@@ -56,8 +56,10 @@ const privateContent = [
 
 function loadCredentials() {
   try {
-    return JSON.parse(fs.readFileSync(credentialFile, 'utf8')).map((credential) => ({
+    return JSON.parse(fs.readFileSync(credentialFile, 'utf8')).map((credential, index) => ({
       ...credential,
+      name: credential.name || `패스키 ${index + 1}`,
+      createdAt: credential.createdAt || new Date().toISOString(),
       publicKey: new Uint8Array(Buffer.from(credential.publicKey, 'base64'))
     }));
   } catch {
@@ -117,6 +119,8 @@ app.post('/api/passkey/register-verify', async (req, res) => {
     const { credential } = verification.registrationInfo;
     credentials.push({
       id: credential.id,
+      name: `패스키 ${credentials.length + 1}`,
+      createdAt: new Date().toISOString(),
       publicKey: credential.publicKey,
       counter: credential.counter,
       transports: req.body.response?.transports || []
@@ -130,6 +134,17 @@ app.post('/api/passkey/register-verify', async (req, res) => {
     console.error('Passkey registration verification failed:', error);
     res.status(400).json({ success: false, message: error.message });
   }
+});
+
+app.get('/api/passkey/list', (req, res) => {
+  res.json({
+    count: credentials.length,
+    credentials: credentials.map(({ id, name, createdAt }) => ({
+      id,
+      name,
+      createdAt
+    }))
+  });
 });
 
 app.post('/api/passkey/register-cancel', (req, res) => {
@@ -213,14 +228,15 @@ app.get('/api/private-content', (req, res) => {
   res.json({ success: true, content: privateContent });
 });
 
-app.delete('/api/passkey/delete', (req, res) => {
-  if (credentials.length < 2) {
-    return res.status(400).json({ message: '예비 패스키를 남겨두려면 패스키를 2개 이상 등록해야 합니다.' });
+app.delete('/api/passkey/:id', (req, res) => {
+  const credentialIndex = credentials.findIndex((credential) => credential.id === req.params.id);
+  if (credentialIndex === -1) {
+    return res.status(404).json({ message: '해당 패스키를 찾을 수 없습니다.' });
   }
 
-  credentials.shift();
+  const [deletedCredential] = credentials.splice(credentialIndex, 1);
   saveCredentials();
-  res.json({ message: '첫 번째 패스키를 삭제했습니다.' });
+  res.json({ message: `${deletedCredential.name}을(를) 삭제했습니다.`, remaining: credentials.length });
 });
 
 app.listen(port, () => {

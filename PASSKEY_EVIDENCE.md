@@ -42,3 +42,11 @@ The public profile remains in `index.html`. Private content is kept in `server.j
 - **T08-C33**: `POST /api/passkey/logout` deletes the session token. Reusing the old token against `/api/private-content` then receives `401`, `패스키 인증이 필요합니다.`
 - **T08-C34**: Session tokens are intentionally redacted in this document and in browser logs. Only the token prefix may be used in local debugging; the complete value is never submitted.
 - **T08-C35**: The page contains no password input or password-based login flow. Authentication uses WebAuthn passkeys only.
+
+## Multiple passkey evidence for T08-C42 to T08-C46
+
+- **T08-C42**: The server stores multiple credential records for the same portfolio owner. The intended test state is two records in `passkeys.json`.
+- **T08-C43**: `GET /api/passkey/list` returns each credential's human-readable `name` and `createdAt`. The page renders both fields for every registered passkey.
+- **T08-C44**: Each listed passkey has its own delete button. Deleting one record leaves the other credential available for authentication.
+- **T08-C45**: The deleted credential ID is removed from the server's `credentials` array and `passkeys.json`; a later assertion using that ID is rejected as an unregistered passkey.
+- **T08-C46**: When the last passkey is deleted, the page displays `등록된 패스키가 없습니다. 패스키를 등록해주세요.` and the login-options API returns `400` with `먼저 패스키를 등록해주세요.` until a new passkey is registered.
